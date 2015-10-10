@@ -1,0 +1,44 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  MiniGLSL Compiler Readme
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+CSC 467, Fall Term 2015
+
+By:
+
+    Daniel Della Penna 999180808
+
+    Sai Kiran Varikooty 998440307
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Lab 1: Scanner
+--------------
+
+- data types could also be valid identifiers, meaning they will match for both rules with equal length
+    - we placed the identifier rule last so data types will have higher precedence
+
+- integers can overflow into negative values causing comparisons to MAX_INTEGER to provide invalid results
+    - using an unsigned integer in C avoids this problem
+    - MAX_INTEGER is less than C's maximum integer size, so even overflowed unsigned integer values will provide valid results in the comparison
+
+- operators which consist of multiple characters (>=, !=, etc.) need to be returned to Bison as defined tokens
+    - single character operators can and have been defined using their literal ASCII values instead of defined tokens
+
+- QUESTIONS
+
+    - Q: don't floats require a max length? What is it?
+        - A: not defined in spec, can define our own
+
+    - Q: are underscores allowed? Is __ a valid identifier?
+        - A: yes, can follow full GLSL spec, which permits this
+
+    - Q: can the defined macros change? Do we have to cover cases where the macro's value exceed's C's representation of an integer?
+        - A: yes they can change, no we don't have to cover these cases
+            - we don't have to handle overflowing the variables for MAX_INTEGER comparison
+
+- KNOWN ISSUES
+
+    - integer and float values are compared against macros MAX_INTEGER and MAX_FLOAT but if the variables used overflow => undef. behaviour
+        - no overflow protection library used currently
+        - unsigned int overflows on developer computer at value 2E+32-1 = 4294967296, causing undef. behaviour
