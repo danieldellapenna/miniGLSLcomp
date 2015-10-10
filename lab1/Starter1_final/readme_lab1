@@ -19,8 +19,7 @@ Lab 1: Scanner
     - we placed the identifier rule last so data types will have higher precedence
 
 - integers can overflow into negative values causing comparisons to MAX_INTEGER to provide invalid results
-    - using an unsigned integer in C avoids this problem
-    - MAX_INTEGER is less than C's maximum integer size, so even overflowed unsigned integer values will provide valid results in the comparison
+    - using an unsigned long in C avoids this problem, can use strtoul to detect and report overflow, preventing undefined behaviour
 
 - operators which consist of multiple characters (>=, !=, etc.) need to be returned to Bison as defined tokens
     - single character operators can and have been defined using their literal ASCII values instead of defined tokens
@@ -41,7 +40,10 @@ Lab 1: Scanner
 
     - integer and float values are compared against macros MAX_INTEGER and MAX_FLOAT but if the variables used overflow => undef. behaviour
         - no overflow protection library used currently
-        - unsigned int overflows on developer computer at value 2E+32-1 = 4294967296, causing undef. behaviour
+        - unsigned long overflows at value ULONG_MAX
+            - 2E+64-1 = 18446744073709551615 on developer computer, may be 2E+32-1 = 4294967295 on other computers
+        - float overflows on developer computer at value FLT_MAX
+            - 3.402823E+38 = 340282346638528859811704183484516925440.000000 on developer computer
 
 - EXAMPLE CMD
 

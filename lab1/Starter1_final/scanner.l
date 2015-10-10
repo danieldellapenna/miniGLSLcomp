@@ -14,11 +14,11 @@
 
 #include "common.h"
 #include "parser.tab.h"
-#include "string.h"
-#include "limits.h"
+#include <string.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <errno.h>
-
+#include <float.h>
 
 #define YY_USER_INIT { yyin = inputFile; }
 #define	yyinput      input
@@ -73,9 +73,19 @@ int_hex 0[xX]{hex_digit}+
     /*Literals*/
 {float} { 
 
-    float valLitFloat = strtof(yytext, NULL); /* always read as unsigned integer as the sign is not included for token */
+    printf("%f\n", FLT_MAX);
 
-    if (valLitFloat > MAX_FLOAT) {
+    errno = 0;
+
+    float valLitFloat = strtof(yytext, NULL); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%f\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Float value overflow"); 
+    }
+
+    else if (valLitFloat > MAX_FLOAT) {
 
         yERROR("Exceeded MAX_FLOAT value");
     }
@@ -93,10 +103,17 @@ int_hex 0[xX]{hex_digit}+
 
 {int_dec} { 
 
-    unsigned int valLitInt = strtoul(yytext, NULL, 10); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%u\n", valLitInt);*/
+    errno = 0;
 
-    if (valLitInt > MAX_INTEGER) {
+    unsigned long valLitInt = strtoul(yytext, NULL, 10); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%ul\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Integer value overflow"); 
+    }
+
+    else if (valLitInt > MAX_INTEGER) {
 
         yERROR("Exceeded MAX_INTEGER value");
     }
@@ -111,10 +128,17 @@ int_hex 0[xX]{hex_digit}+
 
 {int_oct} { 
 
-    unsigned int valLitInt = strtoul(yytext, NULL, 8); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%u\n", valLitInt);*/
+    errno = 0;
 
-    if (valLitInt > MAX_INTEGER) {
+    unsigned long valLitInt = strtoul(yytext, NULL, 8); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%ul\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Integer value overflow"); 
+    }
+
+    else if (valLitInt > MAX_INTEGER) {
 
         yERROR("Exceeded MAX_INTEGER value");
     }
@@ -129,10 +153,17 @@ int_hex 0[xX]{hex_digit}+
 
 {int_hex} { 
 
-    unsigned int valLitInt = strtoul(yytext, NULL, 16); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%u\n", valLitInt);*/
+    errno = 0;
 
-    if (valLitInt > MAX_INTEGER) {
+    unsigned long valLitInt = strtoul(yytext, NULL, 16); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%ul\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Integer value overflow"); 
+    }
+
+    else if (valLitInt > MAX_INTEGER) {
 
         yERROR("Exceeded MAX_INTEGER value");
     }
