@@ -1,6 +1,6 @@
 %{
 /***********************************************************************
- *   Group :
+ *   Group : cd-012
  *
  *   Daniel Della Penna 999180808
  *
@@ -158,6 +158,7 @@ token
   |     IF /*{ printf("Bison found if statement\n"); }*/
   |     ELSE
   |     WHILE
+  |     '='
   |     '+'
   |     '-'
   |     '*'

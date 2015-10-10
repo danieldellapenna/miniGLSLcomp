@@ -1,5 +1,9 @@
 /***********************************************************************
- * **YOUR GROUP INFO SHOULD GO HERE**
+ *   Group : cd-012
+ *
+ *   Daniel Della Penna 999180808
+ *
+ *   Sai Kiran Varikooty 998440307
  *
  * common.h
  *

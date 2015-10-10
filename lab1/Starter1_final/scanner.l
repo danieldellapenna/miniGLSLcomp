@@ -1,11 +1,12 @@
 %{
 /**********************************************************************
- *
- *   Group :
+ *   Group : cd-012
  *
  *   Daniel Della Penna 999180808
  *
  *   Sai Kiran Varikooty 998440307
+ *
+ *  scanner.l
  *
  *  Interface to the scanner module for CSC467 course project
  **********************************************************************/
@@ -176,6 +177,9 @@ int_hex 0[xX]{hex_digit}+
 "while" { yTRACE(WHILE); return WHILE; }
 
     /*Operators*/
+
+    /*Equals*/
+"=" { yTRACE(yytext[0]); return yytext[0]; }
 
     /*Math*/
     /*Use ASCII for basic math operations*/

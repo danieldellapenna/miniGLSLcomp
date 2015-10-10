@@ -42,3 +42,7 @@ Lab 1: Scanner
     - integer and float values are compared against macros MAX_INTEGER and MAX_FLOAT but if the variables used overflow => undef. behaviour
         - no overflow protection library used currently
         - unsigned int overflows on developer computer at value 2E+32-1 = 4294967296, causing undef. behaviour
+
+- EXAMPLE CMD
+
+    - ./compiler467 test.glsl -Ds -Tn -R test.trace
