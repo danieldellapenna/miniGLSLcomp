@@ -60,7 +60,7 @@ extern int yyline;        /* variable holding current line number   */
 
 %union {
 
-  int ival;
+  unsigned long ival;
   float fval;
   char *idval;
 }

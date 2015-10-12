@@ -25,7 +25,8 @@
 #define yTRACE(x)    { if (traceScanner) fprintf(traceFile, "TOKEN %3d : %s\n", x, yytext); }
 #define yERROR(x)    { fprintf(errorFile, "\nLEXICAL ERROR, LINE %d: %s\n", yyline, x); errorOccurred = TRUE; yyterminate(); }
 
-int CheckInt(void);
+unsigned long CheckInt(int base);
+float CheckFloat();
 int yyline = 1;
 
 %}
@@ -36,7 +37,7 @@ WS          [ \t]
 alpha [a-zA-Z]
 dec_digit [0-9]
 oct_digit [0-7]
-hex_digit [0-9a-fA-F]
+hex_digit [0-9a-fA-F] 
 
 validIDName ({alpha}|_)({alpha}|{dec_digit}|_)*
 
@@ -73,107 +74,30 @@ int_hex 0[xX]{hex_digit}+
     /*Literals*/
 {float} { 
 
-    printf("%f\n", FLT_MAX);
-
-    errno = 0;
-
-    float valLitFloat = strtof(yytext, NULL); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%f\n", valLitInt);*/
-
-    if (errno == ERANGE) {
-
-        yERROR("Float value overflow"); 
-    }
-
-    else if (valLitFloat > MAX_FLOAT) {
-
-        yERROR("Exceeded MAX_FLOAT value");
-    }
-
-    else {
-    
+        yylval.fval = CheckFloat();
         yTRACE(LIT_FLOAT);
-        yylval.fval = valLitFloat;
-        return LIT_FLOAT; 
-    }
-
-/* Do we have a max float val? We should, it could overflow */
-
+        return LIT_FLOAT;
 }
 
 {int_dec} { 
 
-    errno = 0;
-
-    unsigned long valLitInt = strtoul(yytext, NULL, 10); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%ul\n", valLitInt);*/
-
-    if (errno == ERANGE) {
-
-        yERROR("Integer value overflow"); 
-    }
-
-    else if (valLitInt > MAX_INTEGER) {
-
-        yERROR("Exceeded MAX_INTEGER value");
-    }
-
-    else {
-    
+        yylval.ival = CheckInt(10);
         yTRACE(LIT_INT);
-        yylval.ival=valLitInt;
         return LIT_INT; 
-    }
 }
 
 {int_oct} { 
 
-    errno = 0;
-
-    unsigned long valLitInt = strtoul(yytext, NULL, 8); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%ul\n", valLitInt);*/
-
-    if (errno == ERANGE) {
-
-        yERROR("Integer value overflow"); 
-    }
-
-    else if (valLitInt > MAX_INTEGER) {
-
-        yERROR("Exceeded MAX_INTEGER value");
-    }
-
-    else {
-    
+        yylval.ival = CheckInt(8);
         yTRACE(LIT_INT);
-        yylval.ival=valLitInt;
         return LIT_INT; 
-    }
 }
 
 {int_hex} { 
 
-    errno = 0;
-
-    unsigned long valLitInt = strtoul(yytext, NULL, 16); /* always read as unsigned integer as the sign is not included for token */
-    /*printf("%ul\n", valLitInt);*/
-
-    if (errno == ERANGE) {
-
-        yERROR("Integer value overflow"); 
-    }
-
-    else if (valLitInt > MAX_INTEGER) {
-
-        yERROR("Exceeded MAX_INTEGER value");
-    }
-
-    else {
-    
+        yylval.ival = CheckInt(6);
         yTRACE(LIT_INT);
-        yylval.ival=valLitInt;
         return LIT_INT; 
-    }
 }
 
 "true" { yTRACE(LIT_TRUE); return LIT_TRUE; }
@@ -254,6 +178,54 @@ int_hex 0[xX]{hex_digit}+
     }
 }
 
+"\n" { yyline++; }
+
 .           { yERROR("Unknown token"); }
 
 %%
+
+unsigned long CheckInt (int base) {
+
+    errno = 0;
+
+    unsigned long valLitInt = strtoul(yytext, NULL, base); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%ul\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Integer value overflow"); 
+    }
+
+    else if (valLitInt > MAX_INTEGER) {
+
+        yERROR("Exceeded MAX_INTEGER value");
+    }
+
+    else {
+    
+        return valLitInt; 
+    }
+}
+
+float CheckFloat (void) {
+
+    errno = 0;
+
+    float valLitFloat = strtof(yytext, NULL); /* always read as unsigned integer as the sign is not included for token */
+    /*printf("%f\n", valLitInt);*/
+
+    if (errno == ERANGE) {
+
+        yERROR("Float value overflow"); 
+    }
+
+    else if (valLitFloat > MAX_FLOAT) {
+
+        yERROR("Exceeded MAX_FLOAT value");
+    }
+
+    else {
+    
+        return valLitFloat; 
+    }
+}

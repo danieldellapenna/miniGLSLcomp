@@ -20,9 +20,19 @@ Lab 1: Scanner
 
 - integers can overflow into negative values causing comparisons to MAX_INTEGER to provide invalid results
     - using an unsigned long in C avoids this problem, can use strtoul to detect and report overflow, preventing undefined behaviour
+    - defined functions CheckInt(base) and CheckFloat()
+        - integer and float values are compared against macros MAX_INTEGER and MAX_FLOAT but if the variables used overflow => undef. behaviour
+            - no overflow protection library used currently
+            - unsigned long overflows at value ULONG_MAX
+                - 2E+64-1 = 18446744073709551615 on developer computer, may be 2E+32-1 = 4294967295 on other computers
+            - float overflows on developer computer at value FLT_MAX
+                - 3.402823E+38 = 340282346638528859811704183484516925440.000000 on developer computer
+                - MAX_FLOAT defined as new constant in common.h, float version of MAX_INT, same numeric value
 
 - operators which consist of multiple characters (>=, !=, etc.) need to be returned to Bison as defined tokens
     - single character operators can and have been defined using their literal ASCII values instead of defined tokens
+
+- incrememted yyline for each newline seen, to be used with yERROR reporting
 
 - QUESTIONS
 
@@ -36,15 +46,11 @@ Lab 1: Scanner
         - A: yes they can change, no we don't have to cover these cases
             - we don't have to handle overflowing the variables for MAX_INTEGER comparison
 
-- KNOWN ISSUES
-
-    - integer and float values are compared against macros MAX_INTEGER and MAX_FLOAT but if the variables used overflow => undef. behaviour
-        - no overflow protection library used currently
-        - unsigned long overflows at value ULONG_MAX
-            - 2E+64-1 = 18446744073709551615 on developer computer, may be 2E+32-1 = 4294967295 on other computers
-        - float overflows on developer computer at value FLT_MAX
-            - 3.402823E+38 = 340282346638528859811704183484516925440.000000 on developer computer
-
 - EXAMPLE CMD
 
-    - ./compiler467 test.glsl -Ds -Tn -R test.trace
+    ./compiler467 test.glsl -Tn -R test.trace -E test.error
+
+    - test.glsl is the miniGLSL input file
+    - test.trace is the trace output file
+    - test.error is the error output file
+
